@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="自回归模型（AR） 描述当前值与历史值之间的关系，用变量自身的历史时间数据对自身进行预测。  公式：$$ y_t&#x3D;\mu+\sum_{i&#x3D;1,p}{\gamma {i}y{t-1}+\epsilon_{t}} $$  自回归模型是使用自身的数据来进行预测，因此数据必须具有平稳性和自相关性。  AR(p)模型的意义为：  任意一个t时刻的序列值 &#x3D; t时刻的前p个序列值的线性组合 + t时刻的随机误">
+  <meta name="description" content="自回归模型（AR） 描述当前值与历史值之间的关系，用变量自身的历史时间数据对自身进行预测。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARIMA模型详解">
 <meta property="og:url" content="http://example.com/2021/03/17/ARIMA%E6%A8%A1%E5%9E%8B%E8%AF%A6%E8%A7%A3/index.html">
 <meta property="og:site_name" content="BLOG">
-<meta property="og:description" content="自回归模型（AR） 描述当前值与历史值之间的关系，用变量自身的历史时间数据对自身进行预测。  公式：$$ y_t&#x3D;\mu+\sum_{i&#x3D;1,p}{\gamma {i}y{t-1}+\epsilon_{t}} $$  自回归模型是使用自身的数据来进行预测，因此数据必须具有平稳性和自相关性。  AR(p)模型的意义为：  任意一个t时刻的序列值 &#x3D; t时刻的前p个序列值的线性组合 + t时刻的随机误">
+<meta property="og:description" content="自回归模型（AR） 描述当前值与历史值之间的关系，用变量自身的历史时间数据对自身进行预测。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-17T10:39:59.000Z">
-<meta property="article:modified_time" content="2021-03-17T10:54:14.063Z">
+<meta property="article:modified_time" content="2021-03-17T11:17:36.204Z">
 <meta property="article:author" content="kaokao">
 <meta property="article:tag" content="时间序列预测">
 <meta name="twitter:card" content="summary">
@@ -176,7 +176,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-03-17 18:39:59 / 修改时间：18:54:14" itemprop="dateCreated datePublished" datetime="2021-03-17T18:39:59+08:00">2021-03-17</time>
+              <time title="创建时间：2021-03-17 18:39:59 / 修改时间：19:17:36" itemprop="dateCreated datePublished" datetime="2021-03-17T18:39:59+08:00">2021-03-17</time>
             </span>
 
           
@@ -193,8 +193,9 @@
         <h2 id="自回归模型（AR）"><a href="#自回归模型（AR）" class="headerlink" title="自回归模型（AR）"></a>自回归模型（AR）</h2><ul>
 <li>描述当前值与历史值之间的关系，用变量自身的历史时间数据对自身进行预测。</li>
 </ul>
-<p><strong>公式：</strong><br>$$ y_t=\mu+\sum_{i=1,p}{\gamma <em>{i}y</em>{t-1}+\epsilon_{t}} $$</p>
-<ul>
+<span id="more"></span>
+<p><strong>公式：</strong></p>
+<script type="math/tex; mode=display">y_t=\mu+\sum_{i=1,p}{\gamma _{i}y_{t-1}+\epsilon_{t}}</script><ul>
 <li><p>自回归模型是使用自身的数据来进行预测，因此数据必须具有平稳性和自相关性。</p>
 <blockquote>
 <p><code>AR(p)</code>模型的意义为：</p>
@@ -209,11 +210,20 @@
 <h2 id="移动平均模型（MA）"><a href="#移动平均模型（MA）" class="headerlink" title="移动平均模型（MA）"></a>移动平均模型（MA）</h2><ul>
 <li>移动平均模型关注的是自回归模型中误差项的累加。</li>
 </ul>
-<p><strong>公式：</strong><br>$$<br>x_t=w_t+\sum_{i=1,q}{\theta_iu_{t-i}}<br>$$</p>
-<ul>
+<p><strong>公式：</strong></p>
+<script type="math/tex; mode=display">
+x_t=w_t+\sum_{i=1,q}{\theta_iu_{t-i}}</script><ul>
 <li>其中<br>$<br>u_{t-q}=x_t-\sum_{i=1,p}{\gamma_ix_{t-i}}<br>$</li>
 </ul>
-<p>来看一个特殊的无穷阶的<code>AR</code>模型：<br>$$<br>x_t=\epsilon_t+\beta x_{t-1}-\beta^{2} x_{t-2}+\beta^{3} x_{t-3}+…+\beta^{p} x_{t-p}<br>$$<br>将上式中的<code>t</code>用<code>t-1</code>替代，可以得到：<br>$$<br>x_{t-1}=\epsilon_{t-1}+\beta x_{t-2}-\beta^{2} x_{t-3}+\beta^{3} x_{t-4}+..<br>$$<br>将上式两边同时乘以<code>beta</code>：<br>$$<br>\beta x_{t-1}=\beta \epsilon_{t-1}+\beta^{2} x_{t-2}-\beta^{3} x_{t-3}+\beta^{4} x_{t-4}+..<br>$$<br>最后代入原公式：<br>$$<br>x_t=\epsilon <em>t+\beta \epsilon</em>{t-1}<br>$$<br>我们可以得到<code>MA</code>相当于一个无穷阶的<code>AR</code>模型。</p>
+<p>来看一个特殊的无穷阶的<code>AR</code>模型：</p>
+<script type="math/tex; mode=display">
+x_t=\epsilon_t+\beta x_{t-1}-\beta^{2} x_{t-2}+\beta^{3} x_{t-3}+...+\beta^{p} x_{t-p}</script><p>将上式中的<code>t</code>用<code>t-1</code>替代，可以得到：</p>
+<script type="math/tex; mode=display">
+x_{t-1}=\epsilon_{t-1}+\beta x_{t-2}-\beta^{2} x_{t-3}+\beta^{3} x_{t-4}+..</script><p>将上式两边同时乘以<code>beta</code>：</p>
+<script type="math/tex; mode=display">
+\beta x_{t-1}=\beta \epsilon_{t-1}+\beta^{2} x_{t-2}-\beta^{3} x_{t-3}+\beta^{4} x_{t-4}+..</script><p>最后代入原公式：</p>
+<script type="math/tex; mode=display">
+x_t=\epsilon _t+\beta \epsilon_{t-1}</script><p>我们可以得到<code>MA</code>相当于一个无穷阶的<code>AR</code>模型。</p>
 <blockquote>
 <p><code>MA(q)</code>模型的意义为：</p>
 <ol>
@@ -224,8 +234,9 @@
 </ol>
 </blockquote>
 <hr>
-<h2 id="自回归移动平均模型（ARMA）"><a href="#自回归移动平均模型（ARMA）" class="headerlink" title="自回归移动平均模型（ARMA）"></a>自回归移动平均模型（ARMA）</h2><p>将<code>p</code>阶自回归模型和<code>q</code>阶移动平均模型组合，得到自回归移动平均模型<code>ARMA(p,q)</code>，公式如下：<br>$$<br>x_t=\sum_{i=1,p}{\gamma_{i}x_{t-1}}+\sum_{i=1,q}{\theta_iu_{t-i}}+w_t<br>$$</p>
-<p>最后，来说说<code>ARMA</code>模型。当自相关系数和偏自相关系数都没有收敛于0，说明这个时间序列不能纯用低阶的AR模型或者纯用低阶的<code>MA</code>模型来解释，需要低阶的<code>AR</code>和低阶的<code>MA</code>模型混合来解释。也可以换个角度来思考，前面提到，任何一个时间序列都可以用纯粹的<code>AR</code>模型来刻画。但是偏自相关系数无穷阶后都不收敛于0，说明只能用一个高阶的<code>AR</code>来解释。</p>
+<h2 id="自回归移动平均模型（ARMA）"><a href="#自回归移动平均模型（ARMA）" class="headerlink" title="自回归移动平均模型（ARMA）"></a>自回归移动平均模型（ARMA）</h2><p>将<code>p</code>阶自回归模型和<code>q</code>阶移动平均模型组合，得到自回归移动平均模型<code>ARMA(p,q)</code>，公式如下：</p>
+<script type="math/tex; mode=display">
+x_t=\sum_{i=1,p}{\gamma_{i}x_{t-1}}+\sum_{i=1,q}{\theta_iu_{t-i}}+w_t</script><p>最后，来说说<code>ARMA</code>模型。当自相关系数和偏自相关系数都没有收敛于0，说明这个时间序列不能纯用低阶的AR模型或者纯用低阶的<code>MA</code>模型来解释，需要低阶的<code>AR</code>和低阶的<code>MA</code>模型混合来解释。也可以换个角度来思考，前面提到，任何一个时间序列都可以用纯粹的<code>AR</code>模型来刻画。但是偏自相关系数无穷阶后都不收敛于0，说明只能用一个高阶的<code>AR</code>来解释。</p>
 <p>但这样的话，阶数太高，待估参数太多，我们就不开心了。所以我们对这个高阶<code>AR</code>模型做分解，分解出一个低阶的<code>AR</code>模型和另一个特殊的高阶<code>AR</code>模型，其中分解出来的高阶<code>AR</code>模型恰好等价于一个低阶的<code>MA</code>模型。于是我们就可以用低阶的<code>AR</code>模型和低阶的<code>MA</code>模型来描述这个时间序列了，这就是<code>ARMA</code>模型。</p>
 <blockquote>
 <p><code>ARMA(p,q)</code>的意义为：</p>
@@ -241,13 +252,24 @@
 <li>差分阶数——<em>d</em></li>
 <li>移动平均参数<code>moving average parameter</code>——<em>q</em></li>
 </ul>
-<p>当<code>d=0</code>，<br>$$<br>x_t=X_t<br>$$<br>当<code>d=1</code>，<br>$$<br>x_t=X_t-X_{t-1}<br>$$<br>当<code>d=2</code>，<br>$$<br>x_t=X_t-X_{t-1}-(X_{t-1}-X_{t-2})=X_t-2X_{t-1}+X_{t-2}<br>$$<br>一般来说，<strong>一个非平稳序列经过<code>d</code>次差分后，可以转为平稳时间序列。</strong>因此对于时间序列使用<code>ARIMA</code>模型，确定<strong>阶数</strong>和<strong>时间相关性</strong>是关键。</p>
-<h3 id="相关性分析——协方差"><a href="#相关性分析——协方差" class="headerlink" title="相关性分析——协方差"></a>相关性分析——协方差</h3><p>假设两个随机变量X和Y满足位置的概率分布，则我们可以使用协方差来<strong>衡量X和Y的相关性</strong>。<br>$$<br>cov(X,Y)=E[(X-E(X))(Y-E(Y))]<br>$$<br>而在实际应用中，由于整体的概率分布未知，所以无法计算出数学期望，则用X和Y的观测值来计算样本的协方差。<br>$$<br>cov(X,Y)=\frac{1}{n-1}\sum_{i=1,n}(x_i-\mu_X)(y_i-\mu_Y)<br>$$<br>其中用均值代替数学期望。当式9大于0，X和Y正相关，又相同的变化趋势；小于0则X和Y负相关，有相反的变化趋势；等于0则没有线性关系。</p>
+<p>当<code>d=0</code>，</p>
+<script type="math/tex; mode=display">
+x_t=X_t</script><p>当<code>d=1</code>，</p>
+<script type="math/tex; mode=display">
+x_t=X_t-X_{t-1}</script><p>当<code>d=2</code>，</p>
+<script type="math/tex; mode=display">
+x_t=X_t-X_{t-1}-(X_{t-1}-X_{t-2})=X_t-2X_{t-1}+X_{t-2}</script><p>一般来说，<strong>一个非平稳序列经过<code>d</code>次差分后，可以转为平稳时间序列。</strong>因此对于时间序列使用<code>ARIMA</code>模型，确定<strong>阶数</strong>和<strong>时间相关性</strong>是关键。</p>
+<h3 id="相关性分析——协方差"><a href="#相关性分析——协方差" class="headerlink" title="相关性分析——协方差"></a>相关性分析——协方差</h3><p>假设两个随机变量X和Y满足位置的概率分布，则我们可以使用协方差来<strong>衡量X和Y的相关性</strong>。</p>
+<script type="math/tex; mode=display">
+cov(X,Y)=E[(X-E(X))(Y-E(Y))]</script><p>而在实际应用中，由于整体的概率分布未知，所以无法计算出数学期望，则用X和Y的观测值来计算样本的协方差。</p>
+<script type="math/tex; mode=display">
+cov(X,Y)=\frac{1}{n-1}\sum_{i=1,n}(x_i-\mu_X)(y_i-\mu_Y)</script><p>其中用均值代替数学期望。当式9大于0，X和Y正相关，又相同的变化趋势；小于0则X和Y负相关，有相反的变化趋势；等于0则没有线性关系。</p>
 <blockquote>
 <p>值得注意的是，协方差描述随机变量的相关性，只能做到<strong>定性分析</strong>，无法做到<strong>定量分析</strong>。</p>
 </blockquote>
-<h3 id="相关性分析——Pearson相关系数"><a href="#相关性分析——Pearson相关系数" class="headerlink" title="相关性分析——Pearson相关系数"></a>相关性分析——Pearson相关系数</h3><p>为了对随机变量的相关性做定量分析，需要消除协方差之间的量纲，为此引入Pearson相关系数。通过X和Y的标准差来归一化X和Y的协方差。<br>$$<br>corr(X,Y)=\frac{E[(X-E(X)(Y-E(Y)))]}{\sqrt{var(X)}\sqrt{var(Y)}}=\frac{cov(X,Y)}{\sigma_X\sigma_Y}=\frac{\sum_{i=1,n}(x_i-\mu_X)(y_i-\mu_Y)}{\sum_{i=1,n}(x_i-\mu_X)\sum_{i=1,n}(y_i-\mu_Y)}<br>$$</p>
-<h3 id="时间序列相关性分析——ACK和PACK"><a href="#时间序列相关性分析——ACK和PACK" class="headerlink" title="时间序列相关性分析——ACK和PACK"></a>时间序列相关性分析——ACK和PACK</h3>
+<h3 id="相关性分析——Pearson相关系数"><a href="#相关性分析——Pearson相关系数" class="headerlink" title="相关性分析——Pearson相关系数"></a>相关性分析——Pearson相关系数</h3><p>为了对随机变量的相关性做定量分析，需要消除协方差之间的量纲，为此引入Pearson相关系数。通过X和Y的标准差来归一化X和Y的协方差。</p>
+<script type="math/tex; mode=display">
+corr(X,Y)=\frac{E[(X-E(X)(Y-E(Y)))]}{\sqrt{var(X)}\sqrt{var(Y)}}=\frac{cov(X,Y)}{\sigma_X\sigma_Y}=\frac{\sum_{i=1,n}(x_i-\mu_X)(y_i-\mu_Y)}{\sum_{i=1,n}(x_i-\mu_X)\sum_{i=1,n}(y_i-\mu_Y)}</script><h3 id="时间序列相关性分析——ACK和PACK"><a href="#时间序列相关性分析——ACK和PACK" class="headerlink" title="时间序列相关性分析——ACK和PACK"></a>时间序列相关性分析——ACK和PACK</h3>
     </div>
 
     
@@ -425,6 +447,61 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
