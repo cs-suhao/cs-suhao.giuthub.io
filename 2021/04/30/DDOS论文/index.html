@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[TOC] …">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDOS论文">
+<meta property="og:url" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="BLOG">
+<meta property="og:description" content="[TOC] …">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/jaqen_workflow.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/jaqen_switch_control.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_query.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_mitigation.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_resource_allocate.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_resource_example.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_result1.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_result2.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_result3.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/jaqen_result5.JPG">
+<meta property="og:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪/Blog/bolg/source/_posts/DDOS论文/pathfinder_architecture.JPG">
+<meta property="article:published_time" content="2021-04-30T02:12:43.000Z">
+<meta property="article:modified_time" content="2021-05-18T11:46:17.335Z">
+<meta property="article:author" content="kaokao">
+<meta property="article:tag" content="论文整理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/jaqen_workflow.JPG">
+
+<link rel="canonical" href="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DDOS论文 | BLOG</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">BLOG</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">考考的BLOG</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/30/DDOS%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="kaokao">
+      <meta itemprop="description" content="个人博客，用于记录分享日常、学习">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DDOS论文
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-30 10:12:43" itemprop="dateCreated datePublished" datetime="2021-04-30T10:12:43+08:00">2021-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-18 19:46:17" itemprop="dateModified" datetime="2021-05-18T19:46:17+08:00">2021-05-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<p>…<br><span id="more"></span></p>
+<h1 id="Jaqen-A-High-Performance-Switch-Native-Approach-for-Detecting-and-Mitigating-Volumetric-DDoS-Attacks-with-Programmable-Switches"><a href="#Jaqen-A-High-Performance-Switch-Native-Approach-for-Detecting-and-Mitigating-Volumetric-DDoS-Attacks-with-Programmable-Switches" class="headerlink" title="Jaqen : A High-Performance Switch-Native Approach for Detecting and Mitigating Volumetric DDoS Attacks with Programmable Switches"></a>Jaqen : A High-Performance Switch-Native Approach for Detecting and Mitigating Volumetric DDoS Attacks with Programmable Switches</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>可编程交换机的出现为ISP级别的体积型DDOS攻击的检测提供新的思路。理论上来说，可编程交换机的方法相对于专用硬件和虚拟应用的方法，可以在成本、性能和灵活性上有更好的表现。但是ISP的设定带来了巨大的挑战，需要运行大范围的检测、支持可编程交换机原生的DDOS缓解功能、动态调整来适应DDOS攻击的规模。本文提出了一套系统<code>Jaqen</code>，可以支持以上功能。</p>
+<h2 id="介绍及相关工作"><a href="#介绍及相关工作" class="headerlink" title="介绍及相关工作"></a>介绍及相关工作</h2><p>尽管有多年的工作，体积型DDOS攻击任然是严重威胁，因此ISP作为基础运行商，是对抗DDOS的一个有利位置，因为ISP不会感染客户端侧的服务。可编程交换机的出现促进了其应用在ISP级别的DDOS检测，但是现有的基于可编程交换机的研究都存在一定程度的缺陷，其中有一点是现有的方法都依赖于带外检测，需要将流量重路由到单独的监控设备中，增加了延迟和开销。</p>
+<h3 id="待解决的问题"><a href="#待解决的问题" class="headerlink" title="待解决的问题"></a>待解决的问题</h3><ol>
+<li>开发算法需要是可编程交换机原生的，并且需要支持多种类型DDOS攻击检测。</li>
+<li>交换机原生的灵活DDOS攻击缓解机制。</li>
+<li>全网范围内的DDOS攻击检测与缓解的动态调度。</li>
+</ol>
+<h3 id="ISP级别防御的需求"><a href="#ISP级别防御的需求" class="headerlink" title="ISP级别防御的需求"></a>ISP级别防御的需求</h3><ol>
+<li>不干扰正常流量</li>
+<li>高速包处理能力</li>
+<li>低成本</li>
+</ol>
+<h3 id="现有DDOS防御系统及限制"><a href="#现有DDOS防御系统及限制" class="headerlink" title="现有DDOS防御系统及限制"></a>现有DDOS防御系统及限制</h3><ol>
+<li>基于专有硬件<ul>
+<li>价格昂贵</li>
+<li>缺少灵活性难升级</li>
+</ul>
+</li>
+<li>基于SDN/NFV的防御<ul>
+<li>处理速度慢</li>
+<li>单个虚拟机的处理容量小</li>
+</ul>
+</li>
+<li>基于可编程交换机的DDOS防御<ul>
+<li>带外测量，即需要离线计算统计数据</li>
+<li>低效的缓解机制</li>
+</ul>
+</li>
+</ol>
+<h2 id="主要贡献"><a href="#主要贡献" class="headerlink" title="主要贡献"></a>主要贡献</h2><h3 id="问题及环境"><a href="#问题及环境" class="headerlink" title="问题及环境"></a>问题及环境</h3><ul>
+<li><p>威胁模型：<br>Jaqen主要针对体积型DDOS攻击，例如 TCP SYN 泛洪， ICMP泛洪，大流，DNS泛洪和其他。其他非体积型DDOS攻击如应用层连接攻击则不在此范围内。文章模拟多层、动态的DDOS攻击威胁，攻击者会从多种攻击中选择一种，并且$V$是其最大流量，给定预算值$V$，攻击为：$\sum_{i}{v_t(A_i)} \leq V$,其中$v_t(A_i)$是某一时刻某种类型攻击的流量值。</p>
+</li>
+<li><p>工作流程<br>如图<br><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/jaqen_workflow.JPG" alt="工作流程"></p>
+</li>
+<li><p>攻击检测</p>
+<ul>
+<li>基于TCP的攻击：SYN泛洪，ACK泛洪，RST/FIN泛洪，DNS泛洪（在TCP之上），TCP大流等。</li>
+<li>基于UDP的攻击：利用各种基于UDP协议的放大攻击——DNS、NTP、SNMP、SSDP、Memcached、QUIC和UDP flood。</li>
+<li>基于ICMP的攻击：ICMP flood，smurf attack.</li>
+<li>应用层攻击：简单的非加密HTTP GET/POST flood，SIP Register flood。</li>
+<li>其他非体积型DDOS攻击，详情见后续表16</li>
+</ul>
+</li>
+<li><p>Jaqen可能存在的限制<br>首先，Jaqen中使用的现有可编程交换机没有实现完整的数据包解析。因此，任何需要有效载荷信息的攻击检测和缓解都不受支持。其次，Jaqen需要几秒钟的时间对袭击做出反应。一个高级的攻击者如果能够灵活且频繁地改变攻击类型(例如&lt;5秒)，就可以躲避防御。然而，这种潜在的规避将需要更多的计算/带宽，使攻击者更难隐藏他们的身份(例如，由于流量模式频繁变化)，导致替代防御，如IP过滤攻击源附近。</p>
+</li>
+</ul>
+<h3 id="关键挑战"><a href="#关键挑战" class="headerlink" title="关键挑战"></a>关键挑战</h3><ol>
+<li><strong>对当前和未来的体积攻击的广泛检测覆盖</strong>：与通用服务器相比，可编程交换机在表达能力、资源方面有限。例如，Tofino交换机有O(10)MB SRAM, O(1) ALU, O(10)hash units。这样的资源约束限制了将大量(复杂)算法拟合到交换机硬件中的可能性。</li>
+<li><strong>针对交换机进行优化和资源有效的缓解机制</strong>：对于可编程交换机，之前专为服务器设计的缓解机制已经不适用。</li>
+<li><strong>动态攻击的高效ISP级别的防御</strong>：因为攻击流量可以从任意一个入口交换机进入，想要达到ISP级别的检测及缓解，一个可能的方案是在边缘入口交换机部署Jaqen，但是由于受限的资源，这样的方法不可取。最好的解决方案是，能够动态调整资源分配机制来应对全网范围内的攻击防御。</li>
+</ol>
+<h3 id="Jaqen的DDOS检测"><a href="#Jaqen的DDOS检测" class="headerlink" title="Jaqen的DDOS检测"></a>Jaqen的DDOS检测</h3><p>如图：<br><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/jaqen_switch_control.JPG" alt="Jaqen_data_control"></p>
+<h4 id="数据面设计"><a href="#数据面设计" class="headerlink" title="数据面设计"></a>数据面设计</h4><p>如上图，在数据面中，jaqen维护了特殊包的计数值，也就是上图的第一块；之后维护了几层Universal sketches，最后是不同sketch instances。这个地方文章没有说清楚，具体还得在讲的时候问一下老师。</p>
+<h4 id="控制面设计"><a href="#控制面设计" class="headerlink" title="控制面设计"></a>控制面设计</h4><p>控制面在这里的作用只有一个，就是query，query出不同的测度信息。如下图</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_query.JPG" alt="控制面的query"></p>
+<h3 id="Jaqen的缓解机制"><a href="#Jaqen的缓解机制" class="headerlink" title="Jaqen的缓解机制"></a>Jaqen的缓解机制</h3><p>Jaqen的DDOS缓解机制分成三类策略：<strong>Filtering、Analysis、Update</strong>。每一类都设计了一个API，并且都是基于p4原生的，也就是说可以直接部署在p4交换机中。具体API如下图：</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_mitigation.JPG" alt="jaqen的mitigation"></p>
+<h3 id="Jaqen的全网资源调配机制"><a href="#Jaqen的全网资源调配机制" class="headerlink" title="Jaqen的全网资源调配机制"></a>Jaqen的全网资源调配机制</h3><p>在ISP网络中，Jaqen的目标是按需调度，因此需要在全网范围内解决检测和缓解的调度。作者将资源分配问题描述成混合整数规划问题，提出了一系列边界条件，这是一个NP难问题，因此实际上也只能双层循环来解决。</p>
+<blockquote>
+<p>输入：</p>
+<p>网络拓扑和缓解模块:$v_i=<AvailRes_i,Band_i,Type_i>$,</AvailRes_i,Band_i,Type_i></p>
+<p>交换机i的j模块缓解能力和处理回环流量的能力：$MCap_{i,j,k}$,$BCap_{i,j,k}$</p>
+<p>ISP的总控制器控制路由，即已知每个流量在ISP中的路径</p>
+</blockquote>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_resource_allocate.JPG" alt="资源调度与分配"></p>
+<p>对于每一对可能有攻击流量的入口交换机和出口交换机对，都使用广度优先搜索确定每个交换机上分布的攻击流量和攻击类型。再将每一对路径，根据其路径攻击流量之和进行排序，最后计算每个交换机上分配的缓解流量和类型。</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_resource_example.JPG" alt></p>
+<p>确定分配机制以后，还需要做的就是动态更新，三步走原则：</p>
+<ol>
+<li>重路由，把所有交换机的过滤组件停用，并告知其他所有交换机此交换机不接受数据包，也就是将其在网络拓扑中暂时删去</li>
+<li>复制？（Replication: Once the new rules have been applied, replicate the switch states about the legitimate connections (if not expired) in the controller.）</li>
+<li>重新写规则，将其纳入网络拓扑中</li>
+</ol>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>Mitigation API：</p>
+<ul>
+<li><p>Blocked Bloom filters：</p>
+<p>详情参见论文<a href="extension://bfdogplmndidlpjfhoijckpakkdjkkil/pdf/viewer.html?file=https%3A%2F%2Falgo2.iti.kit.edu%2Fdocuments%2Fcacheefficientbloomfilters-jea.pdf">Cache, Hash- and Space-Efficient Bloom Filters</a></p>
+</li>
+<li><p>Counting Bloom filters：</p>
+</li>
+<li><p>LRU cache：</p>
+</li>
+<li><p>Key-value store：</p>
+</li>
+<li><p>switch-embedded structrures：</p>
+</li>
+</ul>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>我们将Jaqen部署在一个6.5 Tbps Barefoot Tofino交换机和11台Dell R230服务器(Intel Xeon E2620 v4, 64GB RAM,40Gbps Intel Network Interface Card)的测试台上。</p>
+<p>在单次攻击实验中，我们使用10个40gbps的服务器产生流量，剩下一个服务器作为目标受害者。我们使每个服务器上的Intel DPDK[75]库能够实现高性能流量生成。当发送合法流量时，我们重放来自CAIDA的一小时流量，聚合数据包速率为每秒5900万个数据包(Mpps)。对于TCP相关的攻击，发送者使用虚拟IP地址维护最多1048576个合法TCP连接。交换机控制器每5秒拉一次检测结果。</p>
+<h3 id="攻击流量的生成："><a href="#攻击流量的生成：" class="headerlink" title="攻击流量的生成："></a>攻击流量的生成：</h3><p>攻击流量来源：</p>
+<ol>
+<li>“Capture Traces from Mid-Atlantic CCDC 2012.” <a target="_blank" rel="noopener" href="http://www">http://www</a>. netresec.com/?page=MACCDC.<br>[78] </li>
+<li>“DARPA Scalable Network Monitoring (SNM) Program Traf- fic, Traces taken 2009-11-05 to 2009-11-05.” <a target="_blank" rel="noopener" href="https://www">https://www</a>. impactcybertrust.org/dataset_view?idDataset=742.</li>
+</ol>
+<p>此外，各种类型的攻击流量复现用以下方式：</p>
+<ul>
+<li>SYN flood：使用MoonGen(带DPDK)来发送随机源地址的SYN请求包。</li>
+<li>ICMP flood 和 TCP/UDP 大流：通过MoonGen，使用自定义Lua脚本。</li>
+<li>DNS和NTP放大攻击：我们将本地DNS和NTP服务器设置为谷歌公共DNS和来自ntp.org的服务器池，本地DNS响应将淹没受害服务器。</li>
+<li>Mencached放大攻击：我们将Memcached部署到服务器上，向目标受害者发送带有伪造源ip的GET请求。</li>
+</ul>
+<h3 id="实验结果对比："><a href="#实验结果对比：" class="headerlink" title="实验结果对比："></a>实验结果对比：</h3><ul>
+<li>和NetFlow对比检测效果：</li>
+</ul>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_result1.JPG" alt="和netflow对比检测效果"></p>
+<ul>
+<li><p>和Poseidon对比缓解结果：</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_result2.JPG" alt="缓解结果对比"></p>
+</li>
+<li><p>单一攻击的检测结果：</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_result3.JPG" alt="单一攻击的检测结果"></p>
+</li>
+<li><p>动态调整攻击，并识别</p>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\jaqen_result5.JPG" alt="5小时动态调整"></p>
+</li>
+</ul>
+<h1 id="PathFinder-Capturing-DDoS-Traffic-Footprints-on-the-Internet"><a href="#PathFinder-Capturing-DDoS-Traffic-Footprints-on-the-Internet" class="headerlink" title="PathFinder: Capturing DDoS Traffic Footprints on the Internet"></a>PathFinder: Capturing DDoS Traffic Footprints on the Internet</h1><h2 id="摘要-1"><a href="#摘要-1" class="headerlink" title="摘要"></a>摘要</h2><p>DDOS攻击易于部署和实现，但是DDOS防御方法却面临很多困难，包括不知道DDOS流量的路径、无法判断源地址是否为伪造等问题。尽管现阶段是由IP traceback等技术，但是都代价昂贵难以实施。本文提出pathfinder，一种DDoS防御系统可以使用的服务，以获取DDoS流量对受害者的footprint。</p>
+<h2 id="介绍与主要贡献"><a href="#介绍与主要贡献" class="headerlink" title="介绍与主要贡献"></a>介绍与主要贡献</h2><p>DDOS防御系统有几个挑战：（这里和jaqen就是不一样的假设，jaqen中直接知道流量的路径）</p>
+<ol>
+<li>DDoS防御系统通常不知道DDoS流量经过了哪些路径</li>
+<li>每条路径上有多少流量</li>
+<li>每条路径上与哪些源地址或前缀相关联。</li>
+</ol>
+<p>以上这些信息可以作为DDOS流量的footprints信息，加入到DDOS防御系统中。可以考虑各种获取此类信息的方法，包括许多IP回溯方法和路径推断方法，这些方法旨在解决Internet路径的非对称性质，并确定DDoS包到达受害者所经过的路径。不幸的是，正如我们将在第二章中更详细地讨论的那样，这些方法有严重的缺陷。</p>
+<p>本文的贡献：</p>
+<ul>
+<li>PathFinder可以按需部署，并且每一个自治域都可以部署而不需要依赖其他自治域</li>
+<li>高速，且应用现实</li>
+<li>设计了PFTrie可以支持存储查询等操作</li>
+</ul>
+<p>关于源地址伪造这一事件，无论源地址如何伪造，PathFinder可以找出DDOS流量的正确路径，通过路径信息进行拦截。</p>
+<h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><h3 id="IP-Traceback"><a href="#IP-Traceback" class="headerlink" title="IP Traceback"></a>IP Traceback</h3><p>IP Traceback能够让受害者追踪IP数据包的来源，并且重构数据包的路由路径，即使源地址是伪造的。同时，IP Traceback技术采用最多的是<code>marking</code>和<code>logging</code>。</p>
+<p>采用<code>marking</code>技术的方法，路由器会在IP数据包中增加标记。而<code>logging</code>方法则是在路由器中利用数据结构存储该数据包的摘要信息，便于下游受害者追溯这个数据包。</p>
+<p>相比于当前的IP Traceback技术，PathFinder有些有点：PathFinder也是基于<code>logging</code>的方法，但是不同于之前的方法追溯受害者已经收到的任何数据包(例如来自特定源的数据包)的路径，PathFinder找的时将要到来的数据包的路径。即按需追踪。</p>
+<p>——总结来说，就是按需操作，开销小并且准确性会高。</p>
+<h3 id="Path-Inference"><a href="#Path-Inference" class="headerlink" title="Path Inference"></a>Path Inference</h3><p>研究人员研究了如何推断互联网上两个端点之间的路径。[10]的研究没有假设对网络基础设施或对端点的访问有任何控制，而是研究了如何利用从多个有利点收集的边界网关协议(BGP)表来推断Internet上任意两个端点之间的AS路径。</p>
+<p>——总结来说，这种属于路径推断，是基于比如BGP表等路有信息，推断出数据包来源，但是这种方法准确性不高，并且还不是实时方法，无法判断路径其他参数信息，例如带宽等。</p>
+<h2 id="PathFinder设计"><a href="#PathFinder设计" class="headerlink" title="PathFinder设计"></a>PathFinder设计</h2><p>PathFinder仅为DDOS防御系统中的一部分，不能区分DDOS流量和正常流量，能够记录以下信息：</p>
+<ul>
+<li>流量经过的所有AS路径</li>
+<li>如果需要，可以记录流量的源地址或前缀地址</li>
+<li>如需，可以记录流量的其他信息，例如字节数等</li>
+</ul>
+<p><img src="/2021/04/30/DDOS%E8%AE%BA%E6%96%87/苏豪\Blog\bolg\source\_posts\DDOS论文\pathfinder_architecture.JPG" alt="整体框架"></p>
+<p>如图，该模块分成客户端、代理和监控节点三个部分，客户端发布请求，代理和所有AS的监控节点联系。</p>
+<p>……</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本篇文章用于溯源DDOS攻击流量的源地址和路径，但是看下来用处并不是很大，文章设计了新的数据结构，虽然没有细看，可以看出是一种树形结构，因为其需要记录完整的IP地址，基本结构就是前缀树，并且属于从这些监控节点拉日志的操作。对于可编程交换机而言，这样的操作确实有点鸡肋，不能检测不能缓解，仅仅为了溯源就要花费这么大的空间存储，相比于sketch结构，树形结构存储IP地址还是太浪费了。</p>
+<h1 id="Collaborative-detection-and-mitigation-of-DDoS-in-software‑defined-networks"><a href="#Collaborative-detection-and-mitigation-of-DDoS-in-software‑defined-networks" class="headerlink" title="Collaborative detection and mitigation of DDoS in software‑defined networks"></a>Collaborative detection and mitigation of DDoS in software‑defined networks</h1><h2 id="摘要-2"><a href="#摘要-2" class="headerlink" title="摘要"></a>摘要</h2><p>文章主要提出了一种在SDN下的DDOS流量检测和缓解系统，该方法有三个模块：分类模块、缓解模块和协作模块。其中分类模块用机器学习的方法快速检测DDOS流量，缓解模块可以有效阻拦恶意流量，协作模块通过Redis简单消息队列机制，告知其他交换机相关规则和信息。</p>
+<h2 id="介绍及相关工作-1"><a href="#介绍及相关工作-1" class="headerlink" title="介绍及相关工作"></a>介绍及相关工作</h2><p>文章指出SDN网络中DDOS攻击威胁更重，原因就是SDN控制器和南向接口的存在。由于SDN网路中，流表的</p>
+<h2 id="主要贡献-1"><a href="#主要贡献-1" class="headerlink" title="主要贡献"></a>主要贡献</h2><h2 id="实验-1"><a href="#实验-1" class="headerlink" title="实验"></a>实验</h2><h1 id="A-fast-all-packets-based-DDoS-attack-detection-approach-based-on-network-graph-and-graph-kernel"><a href="#A-fast-all-packets-based-DDoS-attack-detection-approach-based-on-network-graph-and-graph-kernel" class="headerlink" title="A fast all-packets-based DDoS attack detection approach based on network graph and graph kernel"></a>A fast all-packets-based DDoS attack detection approach based on network graph and graph kernel</h1><h2 id="摘要-3"><a href="#摘要-3" class="headerlink" title="摘要"></a>摘要</h2><h2 id="介绍及相关工作-2"><a href="#介绍及相关工作-2" class="headerlink" title="介绍及相关工作"></a>介绍及相关工作</h2><h2 id="主要贡献-2"><a href="#主要贡献-2" class="headerlink" title="主要贡献"></a>主要贡献</h2><h2 id="实验-2"><a href="#实验-2" class="headerlink" title="实验"></a>实验</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/" rel="tag"># 论文整理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/20/c-plusplus-primer/" rel="prev" title="c_plusplus_primer">
+      <i class="fa fa-chevron-left"></i> c_plusplus_primer
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jaqen-A-High-Performance-Switch-Native-Approach-for-Detecting-and-Mitigating-Volumetric-DDoS-Attacks-with-Programmable-Switches"><span class="nav-number">1.</span> <span class="nav-text">Jaqen : A High-Performance Switch-Native Approach for Detecting and Mitigating Volumetric DDoS Attacks with Programmable Switches</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">介绍及相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%85%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.1.</span> <span class="nav-text">待解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ISP%E7%BA%A7%E5%88%AB%E9%98%B2%E5%BE%A1%E7%9A%84%E9%9C%80%E6%B1%82"><span class="nav-number">1.2.2.</span> <span class="nav-text">ISP级别防御的需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89DDOS%E9%98%B2%E5%BE%A1%E7%B3%BB%E7%BB%9F%E5%8F%8A%E9%99%90%E5%88%B6"><span class="nav-number">1.2.3.</span> <span class="nav-text">现有DDOS防御系统及限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.3.</span> <span class="nav-text">主要贡献</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8F%8A%E7%8E%AF%E5%A2%83"><span class="nav-number">1.3.1.</span> <span class="nav-text">问题及环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%8C%91%E6%88%98"><span class="nav-number">1.3.2.</span> <span class="nav-text">关键挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jaqen%E7%9A%84DDOS%E6%A3%80%E6%B5%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">Jaqen的DDOS检测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9D%A2%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">数据面设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E9%9D%A2%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">控制面设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jaqen%E7%9A%84%E7%BC%93%E8%A7%A3%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">Jaqen的缓解机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jaqen%E7%9A%84%E5%85%A8%E7%BD%91%E8%B5%84%E6%BA%90%E8%B0%83%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.5.</span> <span class="nav-text">Jaqen的全网资源调配机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.5.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E9%87%8F%E7%9A%84%E7%94%9F%E6%88%90%EF%BC%9A"><span class="nav-number">1.5.1.</span> <span class="nav-text">攻击流量的生成：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="nav-number">1.5.2.</span> <span class="nav-text">实验结果对比：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PathFinder-Capturing-DDoS-Traffic-Footprints-on-the-Internet"><span class="nav-number">2.</span> <span class="nav-text">PathFinder: Capturing DDoS Traffic Footprints on the Internet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81-1"><span class="nav-number">2.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.2.</span> <span class="nav-text">介绍与主要贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IP-Traceback"><span class="nav-number">2.3.1.</span> <span class="nav-text">IP Traceback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Path-Inference"><span class="nav-number">2.3.2.</span> <span class="nav-text">Path Inference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PathFinder%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.</span> <span class="nav-text">PathFinder设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Collaborative-detection-and-mitigation-of-DDoS-in-software%E2%80%91defined-networks"><span class="nav-number">3.</span> <span class="nav-text">Collaborative detection and mitigation of DDoS in software‑defined networks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81-2"><span class="nav-number">3.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C-1"><span class="nav-number">3.2.</span> <span class="nav-text">介绍及相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE-1"><span class="nav-number">3.3.</span> <span class="nav-text">主要贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C-1"><span class="nav-number">3.4.</span> <span class="nav-text">实验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#A-fast-all-packets-based-DDoS-attack-detection-approach-based-on-network-graph-and-graph-kernel"><span class="nav-number">4.</span> <span class="nav-text">A fast all-packets-based DDoS attack detection approach based on network graph and graph kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81-3"><span class="nav-number">4.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C-2"><span class="nav-number">4.2.</span> <span class="nav-text">介绍及相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE-2"><span class="nav-number">4.3.</span> <span class="nav-text">主要贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C-2"><span class="nav-number">4.4.</span> <span class="nav-text">实验</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">kaokao</p>
+  <div class="site-description" itemprop="description">个人博客，用于记录分享日常、学习</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kaokao</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
